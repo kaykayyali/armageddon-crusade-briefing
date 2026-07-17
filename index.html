@@ -219,7 +219,7 @@
   @keyframes bootlbl{8%{opacity:1}55%{opacity:1}64%{opacity:0}100%{opacity:0}}
 
   /* ++ cinematic intro transmission ++ */
-  .intro{position:fixed;inset:0;z-index:25;background:#060705;cursor:pointer;overflow:hidden}
+  .intro{position:fixed;inset:0;z-index:25;background:#060705;cursor:pointer;overflow:hidden;touch-action:manipulation}
   .intro.done{display:none}
   .intro .static{
     position:absolute;inset:0;pointer-events:none;opacity:.16;z-index:4;
@@ -607,6 +607,7 @@
 
   function au(){
     AC=new (window.AudioContext||window.webkitAudioContext)();
+    if(AC.state==='suspended')AC.resume();
     master=AC.createGain();master.gain.value=.8;master.connect(AC.destination);
     // warp static: looped white noise through a bandpass
     const buf=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate);
@@ -687,8 +688,8 @@
     if(AC){master.gain.linearRampToValueAtTime(0,AC.currentTime+.4);setTimeout(()=>AC.close(),500);}
     document.removeEventListener('keydown',introKeys,true);
   }
-  intro.addEventListener('click',e=>{
-    if(e.target.closest('.enterlink'))return;
+  intro.addEventListener('pointerdown',e=>{
+    if(e.target.closest('.enterlink'))return;   // let the link's own click navigate
     if(e.target.closest('.skip')||finale){endIntro();return;}
     startIntro();
   });
