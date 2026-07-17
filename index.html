@@ -264,14 +264,18 @@
   .stars{position:absolute;top:0;left:0;width:2px;height:2px;border-radius:50%}
   .view{
     position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    opacity:0;transform:scale(.22);
-    transition:transform 2.4s cubic-bezier(.5,0,.6,1),opacity 1s;
+    opacity:0;transform:scale(.5);filter:blur(6px);
+    transition:transform 2.4s cubic-bezier(.5,0,.6,1),opacity 1.4s,filter 1.6s;
   }
-  .view.in{opacity:1;transform:scale(1)}
-  .view.out{opacity:0;transform:scale(7);transition:transform 2.4s cubic-bezier(.4,0,1,1),opacity 1.1s .8s}
+  .view.in{opacity:1;transform:scale(1);filter:blur(0)}
+  .view.out{
+    opacity:0;transform:scale(7);filter:blur(12px);
+    transition:transform 2.4s cubic-bezier(.4,0,1,1),opacity 1.6s .5s,filter 2s;
+  }
   /* zoom dives into the reticled target, not screen centre */
   #vGalaxy{transform-origin:calc(50% - min(23.3vmin,24.4vw)) calc(50% + min(4.2vmin,4.4vw))}
   #vSystem{transform-origin:calc(50% - 24vmin) 50%}
+  #vPlanet{transform-origin:calc(50% + 2.9vmin) calc(50% + 6.2vmin)}
   .ret{
     position:absolute;border:1px solid var(--phosphor);
     box-shadow:0 0 8px rgba(143,224,122,.5),inset 0 0 8px rgba(143,224,122,.25);
@@ -320,6 +324,8 @@
 
   /* stage 3 · relay + battlefield link */
   .s3{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.4rem;padding:0 6vw}
+  .s3>*{filter:blur(12px);opacity:0;transition:filter 1.3s ease,opacity 1.3s ease}
+  .s3.on>*{filter:blur(0);opacity:1}
   .enterlink{
     font-family:'IBM Plex Mono',monospace;font-weight:600;
     font-size:clamp(1.1rem,4.5vw,2.5rem);letter-spacing:.3em;text-transform:uppercase;
@@ -524,7 +530,9 @@
     </div>
     <div class="view" id="vPlanet">
       <div class="pwrap">
-        <div class="armag"></div>
+        <div class="armag">
+          <div class="ret" style="top:58%;left:47%;width:18%;height:18%"><span>Hades Hive</span></div>
+        </div>
         <div class="plabel">++ Armageddon · Hive World · Segmentum Solar ++</div>
       </div>
     </div>
@@ -720,10 +728,11 @@
       s2.classList.add('on');
       setTimeout(()=>{document.getElementById('vGalaxy').classList.replace('in','out');document.getElementById('vSystem').classList.add('in');},2600);
       setTimeout(()=>{document.getElementById('vSystem').classList.replace('in','out');document.getElementById('vPlanet').classList.add('in');},5200);
+      setTimeout(()=>{document.getElementById('vPlanet').classList.replace('in','out');},8300);   // dive into Hades Hive
       setTimeout(()=>{
         s2.classList.remove('on');s3.classList.add('on');finale=true;
         scramble(document.getElementById('enterlink'),'ENTER THE BATTLEFIELD',2400);
-      },8300);
+      },9500);
     });
   }
   function endIntro(){
