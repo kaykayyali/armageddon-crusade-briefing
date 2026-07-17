@@ -280,23 +280,11 @@
     color:var(--phosphor);text-transform:uppercase;white-space:nowrap;
   }
   @keyframes retblink{50%{opacity:.3}}
-  .disc{
-    width:62vmin;height:62vmin;position:relative;border-radius:50%;
-    background:
-      radial-gradient(circle at 50% 50%, rgba(255,240,215,.9) 0 3%, rgba(210,200,255,.4) 9%, rgba(150,150,220,.15) 26%, transparent 60%),
-      radial-gradient(circle at 34% 40%, rgba(62,201,143,.25) 0 10%, transparent 26%),
-      radial-gradient(circle at 68% 30%, rgba(62,201,143,.2) 0 8%, transparent 22%),
-      radial-gradient(circle at 60% 68%, rgba(46,150,130,.22) 0 9%, transparent 24%),
-      radial-gradient(circle at 26% 64%, rgba(62,201,143,.14) 0 12%, transparent 30%);
+  .gmap{
+    position:relative;width:min(88vmin,92vw);aspect-ratio:5/4;
+    background:url("galaxy.jpg") center/cover;border-radius:4px;
+    box-shadow:0 0 8vmin rgba(62,201,143,.2), inset 0 0 12vmin rgba(0,0,0,.6);
   }
-  .disc::before{
-    content:"";position:absolute;inset:6%;border-radius:50%;
-    background:conic-gradient(from 0deg, transparent 0 6%, rgba(190,205,255,.4) 12%, transparent 26%, rgba(255,240,220,.32) 38%, transparent 52%, rgba(190,205,255,.32) 64%, transparent 78%, rgba(255,240,220,.28) 88%, transparent);
-    filter:blur(10px);animation:galspin 26s linear infinite;
-  }
-  @keyframes galspin{to{transform:rotate(360deg)}}
-  .sectors{position:absolute;inset:-6%;opacity:.85;filter:drop-shadow(0 0 4px rgba(217,138,43,.5))}
-  .sectors path,.sectors circle{fill:none;stroke:#d98a2b;stroke-width:.55}
   .syswrap{position:relative;width:70vmin;height:70vmin}
   .sun{
     position:absolute;top:50%;left:50%;width:7vmin;height:7vmin;margin:-3.5vmin 0 0 -3.5vmin;border-radius:50%;
@@ -308,23 +296,9 @@
   .orbit .pl.arm{width:9px;height:9px;margin-top:-5px;left:-5px;background:var(--ember);box-shadow:0 0 9px rgba(209,78,30,.9)}
   .pwrap{display:flex;flex-direction:column;align-items:center;gap:2.2rem}
   .armag{
-    width:44vmin;height:44vmin;border-radius:50%;position:relative;
-    background:
-      radial-gradient(circle at 30% 26%, rgba(255,255,255,.16) 0 6%, transparent 20%),
-      radial-gradient(ellipse 34% 26% at 64% 26%, rgba(160,74,40,.85) 0 55%, transparent 100%),
-      radial-gradient(ellipse 42% 30% at 42% 56%, rgba(38,110,104,.9) 0 55%, transparent 100%),
-      radial-gradient(ellipse 26% 22% at 68% 68%, rgba(46,130,120,.8) 0 50%, transparent 100%),
-      radial-gradient(ellipse 30% 22% at 26% 34%, rgba(125,112,100,.65) 0 55%, transparent 100%),
-      radial-gradient(circle at 34% 30%, #9a8a7a 0%, #6e6258 40%, #3a332c 70%, #17130e 95%);
-    box-shadow:inset -7vmin -5vmin 9vmin rgba(0,0,0,.85), 0 0 5vmin rgba(62,201,143,.18), 0 0 10vmin rgba(74,168,255,.12);
-  }
-  .armag::before{
-    content:"";position:absolute;inset:0;border-radius:50%;opacity:.3;filter:blur(2px);
-    background:repeating-linear-gradient(97deg, transparent 0 14px, rgba(0,0,0,.25) 14px 24px);
-  }
-  .armag::after{
-    content:"";position:absolute;inset:-4%;border-radius:50%;
-    background:radial-gradient(circle, transparent 62%, rgba(143,224,122,.12) 73%, transparent 82%);
+    width:48vmin;height:48vmin;border-radius:50%;position:relative;
+    background:url("planet.jpg") center/cover;
+    box-shadow:0 0 5vmin rgba(62,201,143,.2), 0 0 12vmin rgba(74,168,255,.12);
   }
   .plabel{
     font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.26em;
@@ -531,15 +505,9 @@
   <div class="ist s2" id="s2">
     <div class="stars" id="stars" aria-hidden="true"></div>
     <div class="view in" id="vGalaxy">
-      <div class="disc">
-        <svg class="sectors" viewBox="0 0 100 100" aria-hidden="true">
-          <circle cx="50" cy="50" r="14"/>
-          <path d="M35.3,41.5 L9.3,26.5 A47 47 0 0 1 73.5,9.3 L58.5,35.3"/>
-          <path d="M64.7,41.5 L88.1,28 A44 44 0 0 1 83.7,78.3 L63,60.9"/>
-          <path d="M55.8,66 L65.7,93.2 A46 46 0 0 1 6.8,65.7 L34,55.8"/>
-        </svg>
+      <div class="gmap">
+        <div class="ret" style="top:41%;left:12%;width:23%;height:30%"><span>Segmentum Solar</span></div>
       </div>
-      <div class="ret" style="top:calc(50% - 4.5vmin);left:calc(50% - 4.5vmin);width:9vmin;height:9vmin"><span>Segmentum Solar</span></div>
     </div>
     <div class="view" id="vSystem">
       <div class="syswrap">
@@ -625,22 +593,32 @@
   const intro=document.getElementById('intro');
   const s1=document.getElementById('s1'),s2=document.getElementById('s2'),s3=document.getElementById('s3');
   const typeout=document.getElementById('typeout');
-  let AC=null,master=null,staticGain=null,nbuf=null,analyser=null,scopeRAF=0,crackleIv=0,live=false,finale=false;
+  let AC=null,master=null,bedGain=null,bedBase=.12,nbuf=null,analyser=null,scopeRAF=0,crackleIv=0,live=false,finale=false;
+  let clipRaw=null;
+  fetch('vox-static.wav').then(r=>r.ok?r.arrayBuffer():null).then(b=>clipRaw=b).catch(()=>{});
 
   function au(){
     AC=new (window.AudioContext||window.webkitAudioContext)();
     if(AC.state==='suspended')AC.resume();
     master=AC.createGain();master.gain.value=.8;master.connect(AC.destination);
     analyser=AC.createAnalyser();analyser.fftSize=2048;master.connect(analyser);
-    // warp static: looped white noise through a bandpass
     nbuf=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate);
     const d=nbuf.getChannelData(0);
     for(let n=0;n<d.length;n++)d[n]=Math.random()*2-1;
+    // vox static bed: the real recorded clip, or a synth bed when fetch is blocked (file://)
+    if(clipRaw){
+      AC.decodeAudioData(clipRaw.slice(0)).then(buf=>{
+        const s=AC.createBufferSource();s.buffer=buf;s.loop=true;
+        bedGain=AC.createGain();bedBase=.7;bedGain.gain.value=bedBase;
+        s.connect(bedGain).connect(master);s.start();
+      }).catch(synthBed);
+    }else synthBed();
+  }
+  function synthBed(){
     const noise=AC.createBufferSource();noise.buffer=nbuf;noise.loop=true;
     const bp=AC.createBiquadFilter();bp.type='bandpass';bp.frequency.value=1200;bp.Q.value=.3;
-    staticGain=AC.createGain();staticGain.gain.value=.12;
-    noise.connect(bp).connect(staticGain).connect(master);noise.start();
-    // heavy vox hum: low sawtooth + sub rumble
+    bedGain=AC.createGain();bedBase=.12;bedGain.gain.value=bedBase;
+    noise.connect(bp).connect(bedGain).connect(master);noise.start();
     const hum=AC.createOscillator();hum.type='sawtooth';hum.frequency.value=52;
     const hlp=AC.createBiquadFilter();hlp.type='lowpass';hlp.frequency.value=140;
     const hg=AC.createGain();hg.gain.value=.07;
@@ -648,7 +626,6 @@
     const rum=AC.createOscillator();rum.type='sine';rum.frequency.value=33;
     const rg=AC.createGain();rg.gain.value=.06;
     rum.connect(rg).connect(master);rum.start();
-    // intermittent crackle pops
     crackleIv=setInterval(()=>{if(Math.random()<.6)crackle();},110);
   }
   function crackle(){
@@ -708,8 +685,10 @@
     g.gain.linearRampToValueAtTime(.5,t+.06);
     g.gain.exponentialRampToValueAtTime(.001,t+1);
     o.connect(ws).connect(g).connect(master);o.start(t);o.stop(t+1.05);
-    staticGain.gain.setValueAtTime(.4,t);
-    staticGain.gain.exponentialRampToValueAtTime(.14,t+.9);
+    if(bedGain){
+      bedGain.gain.setValueAtTime(bedBase*3,t);
+      bedGain.gain.exponentialRampToValueAtTime(bedBase,t+.9);
+    }
   }
   function typeText(txt,cb){
     let n=0;
