@@ -439,7 +439,7 @@
   <div class="receive">++ Incoming Transmission · Press to Receive ++</div>
 
   <div class="ist s3" id="s3">
-    <a class="enterlink" id="enterlink" href="https://crusade.damascusfront.net/i/CJQGPG9N">Enter the Battlefield</a>
+    <a class="enterlink" id="enterlink" href="https://crusade.damascusfront.net/i/CJQGPG9N" target="_blank" rel="noopener">Enter the Battlefield</a>
     <div class="sub">++ Vox relay stabilised · press any key for briefing ++</div>
   </div>
 
@@ -503,8 +503,9 @@
   const intro=document.getElementById('intro');
   const s3=document.getElementById('s3');
   let AC=null,master=null,bedGain=null,bedBase=.12,nbuf=null,analyser=null,scopeRAF=0,crackleIv=0,live=false,finale=false;
-  let clipRaw=null;
+  let clipRaw=null,confirmRaw=null,confirmBuf=null;
   fetch('vox-static.wav').then(r=>r.ok?r.arrayBuffer():null).then(b=>clipRaw=b).catch(()=>{});
+  fetch('vox-confirm.wav').then(r=>r.ok?r.arrayBuffer():null).then(b=>confirmRaw=b).catch(()=>{});
 
   function au(){
     AC=new (window.AudioContext||window.webkitAudioContext)();
@@ -522,6 +523,13 @@
         s.connect(bedGain).connect(master);s.start();
       }).catch(synthBed);
     }else synthBed();
+    if(confirmRaw)AC.decodeAudioData(confirmRaw.slice(0)).then(b=>confirmBuf=b).catch(()=>{});
+  }
+  function playConfirm(){
+    if(!AC||!confirmBuf)return;
+    const s=AC.createBufferSource();s.buffer=confirmBuf;
+    const g=AC.createGain();g.gain.value=.9;
+    s.connect(g).connect(master);s.start();
   }
   function synthBed(){
     const noise=AC.createBufferSource();noise.buffer=nbuf;noise.loop=true;
@@ -590,9 +598,14 @@
   function endIntro(){
     intro.classList.add('done');
     cancelAnimationFrame(scopeRAF);clearInterval(crackleIv);
-    if(AC){master.gain.linearRampToValueAtTime(0,AC.currentTime+.4);setTimeout(()=>AC.close(),500);}
+    if(AC){
+      playConfirm();                                          // confirm blip rings out while the static dies
+      if(bedGain)bedGain.gain.linearRampToValueAtTime(0,AC.currentTime+.3);
+      setTimeout(()=>AC.close(),800);
+    }
     document.removeEventListener('keydown',introKeys,true);
   }
+  document.getElementById('enterlink').addEventListener('click',playConfirm);
   intro.addEventListener('pointerdown',e=>{
     if(e.target.closest('.enterlink'))return;   // let the link's own click navigate
     if(e.target.closest('.skip')||finale){endIntro();return;}
