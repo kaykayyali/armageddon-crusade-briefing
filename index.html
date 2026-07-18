@@ -251,64 +251,7 @@
   .ist.on{opacity:1;visibility:visible}
   .scope{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
 
-  /* stage 1 · typed warning */
-  .s1{display:flex;align-items:flex-end;justify-content:center;padding:0 8vw 24vh}
-  .s1 .type{
-    font-family:'IBM Plex Mono',monospace;font-size:clamp(.9rem,2.4vw,1.4rem);
-    letter-spacing:.18em;text-transform:uppercase;color:var(--phosphor);
-    text-shadow:0 0 12px rgba(143,224,122,.55);
-  }
-  .s1 .type::after{content:"▊";margin-left:.15em;animation:cur .7s steps(1) infinite}
-  @keyframes cur{50%{opacity:0}}
-
-  /* stage 2 · warp surge + planetfall */
-  .s2{background:#020403}
-  .stars{position:absolute;top:0;left:0;width:2px;height:2px;border-radius:50%}
-  .view{
-    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    opacity:0;transform:scale(.5);filter:blur(6px);
-    transition:transform 2.4s cubic-bezier(.5,0,.6,1),opacity 1.4s,filter 1.6s;
-  }
-  .view.in{opacity:1;transform:scale(1);filter:blur(0)}
-  .view.out{
-    opacity:0;transform:scale(7);filter:blur(12px);
-    transition:transform 2.4s cubic-bezier(.4,0,1,1),opacity 1.6s .5s,filter 2s;
-  }
-  /* zoom dives into the reticled target, not screen centre */
-  #vPlanet{transform-origin:calc(50% + 2.9vmin) calc(50% + 6.2vmin)}
-  .ret{
-    position:absolute;border:1px solid var(--phosphor);
-    box-shadow:0 0 8px rgba(143,224,122,.5),inset 0 0 8px rgba(143,224,122,.25);
-    animation:retblink .6s steps(2) infinite;
-  }
-  .ret span{
-    position:absolute;top:calc(100% + .6em);left:0;
-    font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.22em;
-    color:var(--phosphor);text-transform:uppercase;white-space:nowrap;
-  }
-  @keyframes retblink{50%{opacity:.3}}
-  .pwrap{display:flex;flex-direction:column;align-items:center;gap:2.2rem}
-  .armag{
-    width:48vmin;height:48vmin;border-radius:50%;position:relative;
-    background:url("planet.jpg") center/cover;
-    box-shadow:0 0 5vmin rgba(62,201,143,.2), 0 0 12vmin rgba(74,168,255,.12);
-  }
-  .plabel{
-    font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.26em;
-    color:var(--phosphor);text-transform:uppercase;text-shadow:0 0 8px rgba(143,224,122,.5);text-align:center;
-  }
-  .warpwrap{position:absolute;inset:0;pointer-events:none;transform:scale(.35)}
-  .s2.on .warpwrap{animation:wgrow 1.6s ease-out forwards}
-  @keyframes wgrow{from{transform:scale(.35)}to{transform:scale(1)}}
-  .wfield{position:absolute;inset:-35%;mix-blend-mode:screen;opacity:0;filter:blur(46px)}
-  .wfield.a{background:conic-gradient(from 20deg, transparent 0 8%, rgba(74,168,255,.5) 16%, transparent 30%, rgba(62,201,143,.55) 44%, transparent 58%, rgba(74,168,255,.4) 72%, transparent 86%, rgba(62,201,143,.35) 94%, transparent)}
-  .wfield.b{background:conic-gradient(from 200deg, transparent 0 10%, rgba(62,201,143,.45) 22%, transparent 36%, rgba(74,168,255,.5) 52%, transparent 66%, rgba(182,120,224,.3) 78%, transparent 90%)}
-  .s2.on .wfield.a{animation:wspin 7s linear infinite, wsurge 2.6s ease-out forwards}
-  .s2.on .wfield.b{animation:wspin 9s linear infinite reverse, wsurge 2.6s ease-out forwards}
-  @keyframes wspin{to{transform:rotate(360deg)}}
-  @keyframes wsurge{0%{opacity:0}12%{opacity:1}60%{opacity:.85}100%{opacity:.3}}
-
-  /* stage 3 · relay + battlefield link */
+  /* battlefield relay */
   .s3{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.4rem;padding:0 6vw}
   .s3>*{filter:blur(12px);opacity:0;transition:filter 1.3s ease,opacity 1.3s ease}
   .s3.on>*{filter:blur(0);opacity:1}
@@ -495,21 +438,6 @@
   <div class="static" aria-hidden="true"></div>
   <div class="receive">++ Incoming Transmission · Press to Receive ++</div>
 
-  <div class="ist s1" id="s1"><div class="type" id="typeout"></div></div>
-
-  <div class="ist s2" id="s2">
-    <div class="stars" id="stars" aria-hidden="true"></div>
-    <div class="view in" id="vPlanet">
-      <div class="pwrap">
-        <div class="armag">
-          <div class="ret" style="top:58%;left:47%;width:18%;height:18%"><span>Hades Hive</span></div>
-        </div>
-        <div class="plabel">++ Armageddon · Hive World · Segmentum Solar ++</div>
-      </div>
-    </div>
-    <div class="warpwrap" aria-hidden="true"><div class="wfield a"></div><div class="wfield b"></div></div>
-  </div>
-
   <div class="ist s3" id="s3">
     <a class="enterlink" id="enterlink" href="https://crusade.damascusfront.net/i/CJQGPG9N">Enter the Battlefield</a>
     <div class="sub">++ Vox relay stabilised · press any key for briefing ++</div>
@@ -573,8 +501,7 @@
 
   /* ++ cinematic intro transmission ++ */
   const intro=document.getElementById('intro');
-  const s1=document.getElementById('s1'),s2=document.getElementById('s2'),s3=document.getElementById('s3');
-  const typeout=document.getElementById('typeout');
+  const s3=document.getElementById('s3');
   let AC=null,master=null,bedGain=null,bedBase=.12,nbuf=null,analyser=null,scopeRAF=0,crackleIv=0,live=false,finale=false;
   let clipRaw=null;
   fetch('vox-static.wav').then(r=>r.ok?r.arrayBuffer():null).then(b=>clipRaw=b).catch(()=>{});
@@ -643,42 +570,6 @@
       scopeRAF=requestAnimationFrame(draw);
     })();
   }
-  function blip(){
-    if(!AC)return;
-    const o=AC.createOscillator(),g=AC.createGain();
-    o.type='square';o.frequency.value=880+Math.random()*420;
-    g.gain.setValueAtTime(.035,AC.currentTime);
-    g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.04);
-    o.connect(g).connect(master);o.start();o.stop(AC.currentTime+.05);
-  }
-  function scream(){
-    if(!AC)return;
-    const t=AC.currentTime;
-    const o=AC.createOscillator();o.type='sawtooth';
-    o.frequency.setValueAtTime(180,t);
-    o.frequency.exponentialRampToValueAtTime(1500,t+.28);
-    o.frequency.exponentialRampToValueAtTime(240,t+.85);
-    const ws=AC.createWaveShaper();
-    const c=new Float32Array(256);
-    for(let n=0;n<256;n++)c[n]=Math.tanh(4*(n/128-1));
-    ws.curve=c;
-    const g=AC.createGain();
-    g.gain.setValueAtTime(0,t);
-    g.gain.linearRampToValueAtTime(.5,t+.06);
-    g.gain.exponentialRampToValueAtTime(.001,t+1);
-    o.connect(ws).connect(g).connect(master);o.start(t);o.stop(t+1.05);
-    if(bedGain){
-      bedGain.gain.setValueAtTime(bedBase*3,t);
-      bedGain.gain.exponentialRampToValueAtTime(bedBase,t+.9);
-    }
-  }
-  function typeText(txt,cb){
-    let n=0;
-    const iv=setInterval(()=>{
-      typeout.textContent=txt.slice(0,++n);blip();
-      if(n>=txt.length){clearInterval(iv);setTimeout(cb,1100);}
-    },48);
-  }
   function scramble(el,txt,dur){
     const pool='ABCDEFGHIKLMNOPQRSTUVWXYZ+#%@&$';
     const t0=performance.now();
@@ -692,18 +583,9 @@
     if(live)return;
     live=true;intro.classList.add('live');
     au();startScope();
-    s1.classList.add('on');
-    typeText('Warp Anomaly detected in the Segmentum Solar',()=>{
-      s1.classList.remove('on');
-      scream();
-      intro.classList.add('burst');                    // hard static hit into the planet view
-      s2.classList.add('on');
-      setTimeout(()=>{document.getElementById('vPlanet').classList.replace('in','out');},3400);   // dive into Hades Hive
-      setTimeout(()=>{
-        s2.classList.remove('on');s3.classList.add('on');finale=true;
-        scramble(document.getElementById('enterlink'),'ENTER THE BATTLEFIELD',2400);
-      },4600);
-    });
+    intro.classList.add('burst');                    // hard static hit into the relay
+    s3.classList.add('on');finale=true;
+    scramble(document.getElementById('enterlink'),'ENTER THE BATTLEFIELD',2400);
   }
   function endIntro(){
     intro.classList.add('done');
@@ -722,9 +604,6 @@
     if(!live&&(e.key==='Enter'||e.key===' '))startIntro();
   }
   document.addEventListener('keydown',introKeys,true);
-  const shadows=[];
-  for(let n=0;n<140;n++)shadows.push(`${Math.random()*100}vw ${Math.random()*100}vh 0 ${Math.random()<.15?1:0}px rgba(255,255,255,${(.25+Math.random()*.6).toFixed(2)})`);
-  document.getElementById('stars').style.boxShadow=shadows.join(',');
   if(reduceMotion){
     // skip straight to the stabilised relay + link, no audio or motion
     intro.classList.add('live');s3.classList.add('on');finale=true;
