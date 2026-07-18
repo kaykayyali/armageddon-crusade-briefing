@@ -605,7 +605,11 @@
     }
     document.removeEventListener('keydown',introKeys,true);
   }
-  document.getElementById('enterlink').addEventListener('click',playConfirm);
+  document.getElementById('enterlink').addEventListener('click',()=>{
+    playConfirm();
+    if(bedGain)bedGain.gain.linearRampToValueAtTime(0,AC.currentTime+.25);   // radio off
+    clearInterval(crackleIv);
+  });
   intro.addEventListener('pointerdown',e=>{
     if(e.target.closest('.enterlink'))return;   // let the link's own click navigate
     if(e.target.closest('.skip')||finale){endIntro();return;}
