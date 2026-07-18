@@ -228,6 +228,8 @@
     animation:crawl .45s steps(4) infinite;
   }
   @keyframes crawl{0%{background-position:0 0}25%{background-position:80px 40px}50%{background-position:-60px 120px}75%{background-position:40px -80px}100%{background-position:0 0}}
+  .intro.burst .static{animation:crawl .45s steps(4) infinite, staticburst .6s steps(6) forwards}
+  @keyframes staticburst{0%{opacity:.9}100%{opacity:.16}}
   .receive{
     position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
     font-family:'IBM Plex Mono',monospace;font-size:clamp(.62rem,1.5vw,.8rem);letter-spacing:.3em;text-transform:uppercase;
@@ -273,8 +275,6 @@
     transition:transform 2.4s cubic-bezier(.4,0,1,1),opacity 1.6s .5s,filter 2s;
   }
   /* zoom dives into the reticled target, not screen centre */
-  #vGalaxy{transform-origin:calc(50% - min(23.3vmin,24.4vw)) calc(50% + min(4.2vmin,4.4vw))}
-  #vSystem{transform-origin:calc(50% - 24vmin) 50%}
   #vPlanet{transform-origin:calc(50% + 2.9vmin) calc(50% + 6.2vmin)}
   .ret{
     position:absolute;border:1px solid var(--phosphor);
@@ -287,20 +287,6 @@
     color:var(--phosphor);text-transform:uppercase;white-space:nowrap;
   }
   @keyframes retblink{50%{opacity:.3}}
-  .gmap{
-    position:relative;width:min(88vmin,92vw);aspect-ratio:5/4;
-    background:url("galaxy.jpg") center/cover;border-radius:4px;
-    box-shadow:0 0 8vmin rgba(62,201,143,.2), inset 0 0 12vmin rgba(0,0,0,.6);
-  }
-  .syswrap{position:relative;width:70vmin;height:70vmin}
-  .sun{
-    position:absolute;top:50%;left:50%;width:7vmin;height:7vmin;margin:-3.5vmin 0 0 -3.5vmin;border-radius:50%;
-    background:radial-gradient(circle at 40% 40%, #fff7d8, #f4b13e 55%, rgba(244,177,62,0) 78%);
-    box-shadow:0 0 5vmin rgba(244,177,62,.8);
-  }
-  .orbit{position:absolute;top:50%;left:50%;border:1px solid rgba(143,224,122,.22);border-radius:50%;transform:translate(-50%,-50%)}
-  .orbit .pl{position:absolute;top:50%;left:-3px;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:#9aa3b0}
-  .orbit .pl.arm{width:9px;height:9px;margin-top:-5px;left:-5px;background:var(--ember);box-shadow:0 0 9px rgba(209,78,30,.9)}
   .pwrap{display:flex;flex-direction:column;align-items:center;gap:2.2rem}
   .armag{
     width:48vmin;height:48vmin;border-radius:50%;position:relative;
@@ -513,22 +499,7 @@
 
   <div class="ist s2" id="s2">
     <div class="stars" id="stars" aria-hidden="true"></div>
-    <div class="view in" id="vGalaxy">
-      <div class="gmap">
-        <div class="ret" style="top:41%;left:12%;width:23%;height:30%"><span>Segmentum Solar</span></div>
-      </div>
-    </div>
-    <div class="view" id="vSystem">
-      <div class="syswrap">
-        <div class="sun"></div>
-        <div class="orbit" style="width:20vmin;height:20vmin"><i class="pl" style="background:#8f8f8f"></i></div>
-        <div class="orbit" style="width:34vmin;height:34vmin"><i class="pl" style="background:#b0a488"></i></div>
-        <div class="orbit" style="width:48vmin;height:48vmin"><i class="pl arm"></i></div>
-        <div class="orbit" style="width:62vmin;height:62vmin"><i class="pl" style="background:#7a8ca0"></i></div>
-        <div class="ret" style="top:calc(50% - 3vmin);left:8vmin;width:6vmin;height:6vmin"><span>Armageddon</span></div>
-      </div>
-    </div>
-    <div class="view" id="vPlanet">
+    <div class="view in" id="vPlanet">
       <div class="pwrap">
         <div class="armag">
           <div class="ret" style="top:58%;left:47%;width:18%;height:18%"><span>Hades Hive</span></div>
@@ -725,14 +696,13 @@
     typeText('Warp Anomaly detected in the Segmentum Solar',()=>{
       s1.classList.remove('on');
       scream();
+      intro.classList.add('burst');                    // hard static hit into the planet view
       s2.classList.add('on');
-      setTimeout(()=>{document.getElementById('vGalaxy').classList.replace('in','out');document.getElementById('vSystem').classList.add('in');},2600);
-      setTimeout(()=>{document.getElementById('vSystem').classList.replace('in','out');document.getElementById('vPlanet').classList.add('in');},5200);
-      setTimeout(()=>{document.getElementById('vPlanet').classList.replace('in','out');},8300);   // dive into Hades Hive
+      setTimeout(()=>{document.getElementById('vPlanet').classList.replace('in','out');},3400);   // dive into Hades Hive
       setTimeout(()=>{
         s2.classList.remove('on');s3.classList.add('on');finale=true;
         scramble(document.getElementById('enterlink'),'ENTER THE BATTLEFIELD',2400);
-      },9500);
+      },4600);
     });
   }
   function endIntro(){
