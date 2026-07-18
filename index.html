@@ -517,8 +517,7 @@
     // vox static bed: the real recorded clip, or a synth bed when fetch is blocked (file://)
     if(clipRaw){
       AC.decodeAudioData(clipRaw.slice(0)).then(buf=>{
-        const s=AC.createBufferSource();s.buffer=buf;
-        s.loop=true;s.loopStart=9;s.loopEnd=buf.duration;   // play the full run once, then cycle the steady 9-17s section
+        const s=AC.createBufferSource();s.buffer=buf;s.loop=true;
         bedGain=AC.createGain();bedBase=.7;bedGain.gain.value=bedBase;
         s.connect(bedGain).connect(master);s.start();
       }).catch(synthBed);
